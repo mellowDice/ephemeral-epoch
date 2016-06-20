@@ -1,1 +1,1 @@
-# etheral-epoch
+# ethereal-epoch
