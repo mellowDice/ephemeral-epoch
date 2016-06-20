@@ -1,10 +1,14 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_socketio import SocketIO, send, emit
 from ee_modules.landscape.fractal_landscape import fractal_landscape
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
 socketio = SocketIO(app)
+
+@app.route('/')
+def index():
+    return 'You did it'
 
 # Setup
 def store_user():
@@ -34,6 +38,7 @@ def share_user_movement(json):
     print('send user movement to other users' + str(json))
     #Get users from DB and send data to each
     emit('my response', json, namespace='/')
+
 # Listen for client data
 
 @socketio.on('message') # String data
@@ -50,9 +55,21 @@ def handle_json(json):
 def test_disconnect():
     print('Client disconnected')
 
+# error handling
+
+@socketio.on_error()
+def error_handler(e):
+    print('error', e)
+    pass
+
+@socketio.on_error_default
+def default_error_handler(e):
+    print('error', e)
+    pass
+
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, debug=True)
 
 
 
