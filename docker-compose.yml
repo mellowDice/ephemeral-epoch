@@ -9,13 +9,6 @@ services:
     expose:
       - "4568"
 
-  client:
-    build:
-      context: ./ee_client
-      dockerfile: client.dockerfile
-    networks:
-      - ethereal-network
-
 networks:
   ethereal-network:
     driver: bridge
