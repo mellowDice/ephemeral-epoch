@@ -1,0 +1,15 @@
+version: '1'
+services:
+  python:
+    build:
+      context: .
+      dockerfile: server.dockerfile
+    networks:
+      -ethereal-network
+
+networks:
+  ethereal-network
+    driver: bridge
+
+
+
