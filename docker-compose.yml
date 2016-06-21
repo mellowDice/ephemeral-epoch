@@ -1,14 +1,23 @@
-version: '1'
+version: '2'
 services:
-  python:
+  server:
     build:
-      context: .
+      context: ./ee_server
       dockerfile: server.dockerfile
     networks:
-      -ethereal-network
+      - ethereal-network
+    expose:
+      - "4568"
+
+  client:
+    build:
+      context: ./ee_client
+      dockerfile: client.dockerfile
+    networks:
+      - ethereal-network
 
 networks:
-  ethereal-network
+  ethereal-network:
     driver: bridge
 
 
