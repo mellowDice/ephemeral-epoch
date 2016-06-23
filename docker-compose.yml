@@ -1,0 +1,17 @@
+version: '2'
+services:
+  server:
+    build:
+      context: ./ee_server
+      dockerfile: server.dockerfile
+    networks:
+      - ethereal-network
+    expose:
+      - "4568"
+
+networks:
+  ethereal-network:
+    driver: bridge
+
+
+
