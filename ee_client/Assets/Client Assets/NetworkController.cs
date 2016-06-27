@@ -12,7 +12,7 @@ public class NetworkController : MonoBehaviour {
   public Terrain myTerrain;
 
   Dictionary<string, GameObject> players;
-  
+
   void Awake () {
     socket = GetComponent<SocketIOComponent>();
   }
