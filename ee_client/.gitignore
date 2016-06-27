@@ -1,5 +1,7 @@
+*
 #Ignore Demo
 Demo.app
 /Assets/Standard Assets/
-/Library
-/Temp
+/Library/
+/Temp/
+/Demo.app

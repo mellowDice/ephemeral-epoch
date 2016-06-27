@@ -9,7 +9,6 @@ public class NetworkController : MonoBehaviour {
   static SocketIOComponent socket;
   public GameObject playerPrefab;
   public GameObject myPlayer;
-  public Terrain myTerrain;
 
   Dictionary<string, GameObject> players;
 
@@ -17,8 +16,8 @@ public class NetworkController : MonoBehaviour {
     socket = GetComponent<SocketIOComponent>();
   }
 	void Start () {
-    socket.On("logged", BuildTerrain);
     socket.On("open", OnConnected);
+    socket.On("load", BuildTerrain);
     socket.On("spawn", OnSpawned);
     socket.On("onEndSpawn", OnEndSpawn);
     socket.On("playerMove", OnMove);
@@ -29,25 +28,21 @@ public class NetworkController : MonoBehaviour {
 
   void OnConnected(SocketIOEvent e) {
     Debug.Log("Connected to server.");
-    // socket.Emit("loggedIn");
   }
 
   void OnSpawned(SocketIOEvent e) {
-    Debug.Log("New Player Spawned" + e.data);
     var player = Instantiate(playerPrefab);
     players.Add(e.data["id"].ToString(), player);
-    Debug.Log("count: " + players.Count);
   }
 
   void BuildTerrain(SocketIOEvent e) {
     Debug.Log("Building Terrain...");
-    // var ter = myTerrain.GetComponent<CreateTerrain>();
-    // Debug.Log("Build..." + e.data["data"]);
-    // ter.BuildingTerrain(e.data["data"]);
+    var ter = GetComponent<CreateTerrainMesh>();
+    ter.BuildMesh(e.data["terrain"]);
   }
 
   void OnEndSpawn(SocketIOEvent e) {
-    Debug.Log("Client disconnected... " + e.data);
+    // Debug.Log("Client disconnected... " + e.data);
     var id = e.data["id"].ToString();
     var player = players[id];
     Destroy(player);
@@ -62,12 +57,10 @@ public class NetworkController : MonoBehaviour {
   }
 
   void OnRequestPosition(SocketIOEvent e) {
-    Debug.Log("Server is requesting position");
-    socket.Emit("updatePosition", new JSONObject(VectorToJSON(myPlayer.transform.position)));
+    socket.Emit("playerPosition", new JSONObject(VectorToJSON(myPlayer.transform.position)));
   }
 
   void OnUpdatePosition(SocketIOEvent e) {
-    Debug.Log("UpdatedPosition");
     var player = players[e.data["id"].ToString()];
     var pos = new Vector3(GetJSONFloat(e.data, "x"), GetJSONFloat(e.data, "y"), GetJSONFloat(e.data, "z"));
     player.transform.position = pos;
